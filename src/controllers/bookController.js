@@ -1,10 +1,20 @@
 const authorModel = require("../models/authorModel")
 const bookModel= require("../models/bookModel")
+const publisherModel=require("../models/publisher")
 
-const createBook= async function (req, res) {
-    let book = req.body
-    let bookCreated = await bookModel.create(book)
-    res.send({data: bookCreated})
+const createBook = async function (req,res){
+    let data = req.body
+    let {author_id , publisher} = data
+    if(!author_id){
+        return res.send ({msg : "Author id is not present."})}
+
+    if(!publisher){
+        return res.send ({msg : "Publisher id is not present."})}
+
+
+        let bookCreated = await bookModel.create(data)
+        res.send({data: bookCreated})
+    
 }
 
 const getBooksData= async function (req, res) {
@@ -12,12 +22,12 @@ const getBooksData= async function (req, res) {
     res.send({data: books})
 }
 
-const getBooksWithAuthorDetails = async function (req, res) {
-    let specificBook = await bookModel.find().populate('author_id')
+const getBooksWithAuthorAndpublisherDetails = async function (req, res) {
+    let specificBook = await bookModel.find().populate('author_id').populate('publisher')
     res.send({data: specificBook})
 
 }
 
 module.exports.createBook= createBook
 module.exports.getBooksData= getBooksData
-module.exports.getBooksWithAuthorDetails = getBooksWithAuthorDetails
+module.exports.getBooksWithAuthorAndpublisherDetails=getBooksWithAuthorAndpublisherDetails
